@@ -12,7 +12,7 @@
 
 // const Weather = () => {
 //   const { location, error: geoError } = useGeoLocation(geolocationOptions)
-//   const { distance, updateDistance } = useDistanceTracker(location)
+//   const { distance, steps, updateDistance } = useDistanceTracker(location)
 //   const [path, setPath] = useState([])
 
 //   useEffect(() => {
@@ -28,9 +28,6 @@
 //   if (geoError) return <div>{geoError}</div>
 //   if (!location) return <div>Loading...</div>
 
-//   const averageStepLength = 0.8 // 미터
-//   const steps = (distance * 1000) / averageStepLength
-
 //   return (
 //     <div>
 //       <div>
@@ -41,7 +38,8 @@
 //           mapWidth={200}
 //         />
 //       </div>
-//       <div>Steps: {steps.toFixed(0)}</div>
+//       <div>Steps: {steps}</div>
+//       <div>Distance: {distance.toFixed(2)} meters</div>
 //     </div>
 //   )
 // }
@@ -79,7 +77,7 @@ const Weather = () => {
   if (!location) return <div>Loading...</div>
 
   const averageStepLength = 0.8 // meters
-  const steps = (distance * 1000) / averageStepLength
+  const steps = distance / averageStepLength
 
   return (
     <div>
@@ -91,7 +89,8 @@ const Weather = () => {
           mapWidth={200}
         />
       </div>
-      <div>Steps: {steps.toFixed(0)}</div>
+      <div>거리: {distance.toFixed(2)} meters</div>
+      <div>평균 걸음: {steps.toFixed(0)}</div>
     </div>
   )
 }
