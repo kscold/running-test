@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
+/* import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 
 const Map = ({ location, path, mapHeight, mapWidth }) => {
@@ -16,3 +16,4 @@ const Map = ({ location, path, mapHeight, mapWidth }) => {
 }
 
 export default Map
+ */

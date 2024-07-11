@@ -1,8 +1,9 @@
-import "./App.css"
-import Step from "./pages/Step"
+import React from "react"
+import { RouterProvider } from "react-router-dom"
+import router from "./router"
 
 function App() {
-  return <Step />
+  return <RouterProvider router={router} />
 }
 
 export default App
