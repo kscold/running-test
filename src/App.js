@@ -1,9 +1,8 @@
-import logo from "./logo.svg"
 import "./App.css"
-import Weather from "./pages/Weather"
+import Step from "./pages/Step"
 
 function App() {
-  return <Weather />
+  return <Step />
 }
 
 export default App

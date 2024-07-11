@@ -1,4 +1,3 @@
-// components/Map.js
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 
