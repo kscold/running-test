@@ -86,8 +86,8 @@ const Step = () => {
           let lng = location.longitude
 
           intervalRef.current = setInterval(() => {
-            lat += 0.0001
-            lng += 0.0001
+            // lat += 0.0001
+            // lng += 0.0001
             dispatch(setLocation({ latitude: lat, longitude: lng }))
             updateDistance({ latitude: lat, longitude: lng })
           }, 5000)
