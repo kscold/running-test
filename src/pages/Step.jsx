@@ -1,54 +1,6 @@
-// import { useGeoLocation } from "../hooks/useGeoLocation"
-// import { useDistanceTracker } from "../hooks/useDistanceTracker"
-// import { useEffect } from "react"
-// import KakaoMap from "../components/KakaoMap"
-
-// const Step = () => {
-//   const {
-//     location,
-//     error: geoError,
-//     requestLocation,
-//   } = useGeoLocation({
-//     enableHighAccuracy: true,
-//     timeout: 1000 * 10,
-//     maximumAge: 1000 * 3600 * 24,
-//   })
-//   const { distance, path, updateDistance, resetDistance, initialized } =
-//     useDistanceTracker()
-
-//   useEffect(() => {
-//     if (location && !initialized) {
-//       resetDistance(location)
-//     } else if (location) {
-//       updateDistance(location)
-//     }
-//   }, [location, initialized, updateDistance, resetDistance])
-
-//   useEffect(() => {
-//     requestLocation()
-//   }, [])
-
-//   if (geoError) return <div>{geoError}</div>
-
-//   const averageStepLength = 0.8 // 평균 걸음 거리
-//   const steps = distance / averageStepLength
-
-//   return (
-//     <div>
-//       {location && (
-//         <KakaoMap location={location} path={path} distance={distance} />
-//       )}
-//       <div>거리: {distance.toFixed(2)} m</div>
-//       <div>약 걸음 수: {steps.toFixed(0)}</div>
-//     </div>
-//   )
-// }
-
-// export default Step
-
 import { useGeoLocation } from "../hooks/useGeoLocation"
 import { useDistanceTracker } from "../hooks/useDistanceTracker"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef, useCallback } from "react"
 import KakaoMap from "../components/KakaoMap"
 import { useDispatch, useSelector } from "react-redux"
 import { setLocation, resetLocation, setTrackingState } from "../redux/location"
@@ -60,77 +12,74 @@ const Step = () => {
     maximumAge: 1000 * 3600 * 24,
   })
   const location = useSelector((state) => state.location)
-  const { resetDistance, updateDistance, initialized } = useDistanceTracker()
+  const { updateDistance, refreshDistance } = useDistanceTracker()
   const dispatch = useDispatch()
   const intervalRef = useRef(null)
+  const firstLocationRef = useRef(null) // 처음 위치를 저장할 Ref
 
-  const handleStartTracking = () => {
+  const onClickStartTracking = useCallback(() => {
     requestLocation()
     dispatch(setTrackingState(true))
-  }
+  }, [requestLocation, dispatch])
 
-  const handleStopTracking = () => {
+  const onClickStopTracking = () => {
+    // setInterval 정리
     clearInterval(intervalRef.current)
+    // watchPosition 정리
     clearWatcher()
+    // 현재 위치 초기화(산책 상태 비활성 포함)
     dispatch(resetLocation())
     dispatch(setTrackingState(false))
   }
 
   useEffect(() => {
     if (location.tracking) {
-      if (location.latitude !== null && !initialized) {
-        resetDistance(location)
-
-        const simulateMovement = () => {
-          let lat = location.latitude
-          let lng = location.longitude
-
-          intervalRef.current = setInterval(() => {
-            // lat += 0.0001
-            // lng += 0.0001
-            dispatch(setLocation({ latitude: lat, longitude: lng }))
-            updateDistance({ latitude: lat, longitude: lng })
-          }, 5000)
-
-          return () => clearInterval(intervalRef.current)
-        }
-
-        simulateMovement()
+      firstLocationRef.current = {
+        latitude: location.latitude,
+        longitude: location.longitude,
       }
-    } else {
-      clearInterval(intervalRef.current)
+      refreshDistance(location)
+
+      intervalRef.current = setInterval(() => {
+        let lat = location.latitude
+        let lng = location.longitude
+
+        // 테스트 이동 코드
+        // lat += 0.0001
+        // lng += 0.0001
+        const newLocation = { latitude: lat, longitude: lng }
+
+        // 새로운 위치의 위경도와 현재 위경도가 같이 않을 때에만 업데이트
+        if (
+          newLocation.latitude !== firstLocationRef.current.latitude ||
+          newLocation.longitude !== firstLocationRef.current.longitude
+        ) {
+          dispatch(setLocation(newLocation))
+          updateDistance(newLocation)
+        }
+      }, 5000)
+
+      // 이 뒷정리 코드가 없으면 좌표가 튐
+      return () => clearInterval(intervalRef.current)
     }
   }, [
-    location.tracking,
-    location,
-    initialized,
-    resetDistance,
-    updateDistance,
-    dispatch,
+    location.tracking, // 산책 상태 유뮤가 바뀔 때
+    location.latitude, // 위도가 업데이트 될 때
+    location.longitude, // 경도가 업데이트 될 때
+    updateDistance, // 위치 업데이트 메서드가 실행 될 떄
+    refreshDistance, // 위치로 새로고침 메서드가 실행 될 때
+    dispatch, // 리듀서함수에 액션이 전달될 때
   ])
-
-  useEffect(() => {
-    if (location.latitude !== null && initialized) {
-      const lastPathPoint = location.path[location.path.length - 1]
-      updateDistance(lastPathPoint)
-    }
-  }, [initialized, location, updateDistance])
-
-  useEffect(() => {
-    if (location.tracking) {
-      handleStartTracking()
-    }
-  }, []) // Run once on component mount to check tracking state
 
   if (error) return <div>{error}</div>
 
   return (
     <div>
       {!location.tracking && (
-        <button onClick={handleStartTracking}>산책 시작</button>
+        <button onClick={onClickStartTracking}>산책 시작</button>
       )}
       {location.tracking && (
-        <button onClick={handleStopTracking}>산책 종료</button>
+        <button onClick={onClickStopTracking}>산책 종료</button>
       )}
       {location.latitude && (
         <>

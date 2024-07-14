@@ -1,80 +1,34 @@
-// import { useState, useEffect } from "react"
-
-// export const useGeoLocation = (options = {}) => {
-//   const [location, setLocation] = useState(null)
-//   const [error, setError] = useState("")
-
-//   const requestLocation = () => {
-//     const { geolocation } = navigator
-//     if (!geolocation) {
-//       setError("Geolocation이 지원되지 않습니다.")
-//       return
-//     }
-
-//     const handleSuccess = (pos) => {
-//       const { latitude, longitude } = pos.coords
-//       setLocation({ latitude, longitude })
-//     }
-
-//     const handleError = (err) => {
-//       if (err.code === err.PERMISSION_DENIED) {
-//         setError(
-//           "사용자가 위치 액세스를 거부했습니다. 위치 서비스를 활성화하고 페이지를 새로고침하세요."
-//         )
-//       } else {
-//         setError(err.message)
-//       }
-//     }
-
-//     const watcher = geolocation.watchPosition(
-//       handleSuccess,
-//       handleError,
-//       options
-//     )
-//     return () => geolocation.clearWatch(watcher)
-//   }
-
-// useEffect(() => {
-//   const simulateMovement = () => {
-//     if (!location) return // location이 null이 아니어야 함
-
-//     let lat = location.latitude // Starting 위도
-//     let lng = location.longitude // Starting 경도
-
-//     const intervalId = setInterval(() => {
-//       lat += 0.0001
-//       lng += 0.0001
-//       setLocation({ latitude: lat, longitude: lng })
-//     }, 5000) // 5초마다 업데이트
-//   }
-
-//   simulateMovement()
-// }, [location])
-
-//   return { location, error, requestLocation }
-// }
-
 import { useState, useRef } from "react"
 import { useDispatch } from "react-redux"
 import { setLocation } from "../redux/location"
 
-export const useGeoLocation = (options = {}) => {
+/**
+ * 사용자가 움직이는 것을 계속 감지하기 위해 watchPosition 설정하는 Custom Hooks
+ * @method requestLocation requestLocation 메서드 실행을 위해 watchPosition 실행
+ * @method clearWatcher 위경도의 위치를 새로고침하는 메서드
+ * @returns {error}  Custom Hooks 메서드 이외에 error 메세지도 반환
+ */
+export const useGeoLocation = (options) => {
   const [error, setError] = useState("")
   const dispatch = useDispatch()
   const watcherRef = useRef(null)
+  const { geolocation } = navigator
 
   const requestLocation = () => {
-    const { geolocation } = navigator
+    // navigator.geolocation에서 기능을 이용
+
     if (!geolocation) {
       setError("Geolocation이 지원되지 않습니다.")
       return
     }
 
+    // watchPosition() 성공시 전역 상태 업데이트
     const handleSuccess = (pos) => {
       const { latitude, longitude } = pos.coords
       dispatch(setLocation({ latitude, longitude }))
     }
 
+    // watchPosition() 에러 처리
     const handleError = (err) => {
       if (err.code === err.PERMISSION_DENIED) {
         setError(
@@ -85,6 +39,7 @@ export const useGeoLocation = (options = {}) => {
       }
     }
 
+    // 사용자가 움직이는 것을 계속 감지하기 위해 watchPosition를 이용하여 watcherRef에 저장
     watcherRef.current = geolocation.watchPosition(
       handleSuccess,
       handleError,
@@ -94,7 +49,7 @@ export const useGeoLocation = (options = {}) => {
 
   const clearWatcher = () => {
     if (watcherRef.current !== null) {
-      navigator.geolocation.clearWatch(watcherRef.current)
+      geolocation.clearWatch(watcherRef.current)
     }
   }
 

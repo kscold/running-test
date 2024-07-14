@@ -20,14 +20,10 @@ const locationSlice = createSlice({
         state.path.push({ latitude, longitude })
       }
     },
-    // 현재 위치 초기화
+    // 현재 위치(경도, 위도) 초기화
     resetLocation: (state) => {
       state.latitude = null
       state.longitude = null
-      state.path = []
-      state.distance = 0
-      state.steps = 0
-      state.tracking = false
     },
     // 거리와 걸음걸이를 누적합
     updateDistanceAndSteps: (state, action) => {
