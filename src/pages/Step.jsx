@@ -1,13 +1,14 @@
 import { useGeoLocation } from "../hooks/useGeoLocation"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import KakaoMap from "../components/KakaoMap"
 import { useDispatch, useSelector } from "react-redux"
 import { setTrackingState } from "../redux/location"
 import { startMovement, stopMovement } from "../services/movementService"
 
 const Step = () => {
+  const [enableHighAccuracyState, setEnableHighAccuracyState] = useState(false)
   const { error, requestLocation, clearWatcher } = useGeoLocation({
-    enableHighAccuracy: false, // 정확성이 높지만 디바스의 배터리 소모가 빠름
+    enableHighAccuracy: enableHighAccuracyState, // 정확성이 높지만 디바스의 배터리 소모가 빠름
     timeout: 1000 * 10, // api 최대 요청 시간 설정
     maximumAge: 1000 * 3600 * 24, // 불러온 값을 캐싱하는 시간
   })
@@ -29,6 +30,10 @@ const Step = () => {
     clearWatcher()
   }
 
+  const toggleHighAccuracy = () => {
+    setEnableHighAccuracyState((prev) => !prev)
+  }
+
   if (error) return <div>{error}</div>
 
   return (
@@ -48,6 +53,9 @@ const Step = () => {
           />
           <div>거리: {location.distance.toFixed(2)} m</div>
           <div>약 걸음 수: {location.steps.toFixed(0)}</div>
+          <button onClick={toggleHighAccuracy}>
+            민감도 모드: {enableHighAccuracyState ? "켜짐" : "꺼짐"}
+          </button>
         </>
       )}
     </div>
