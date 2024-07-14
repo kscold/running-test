@@ -7,7 +7,7 @@ import { startMovement, stopMovement } from "../services/movementService"
 
 const Step = () => {
   const { error, requestLocation, clearWatcher } = useGeoLocation({
-    enableHighAccuracy: true, // 정확성이 높지만 디바스의 배터리 소모가 빠름
+    enableHighAccuracy: false, // 정확성이 높지만 디바스의 배터리 소모가 빠름
     timeout: 1000 * 10, // api 최대 요청 시간 설정
     maximumAge: 1000 * 3600 * 24, // 불러온 값을 캐싱하는 시간
   })
