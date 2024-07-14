@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import { useDispatch } from "react-redux"
 import { setLocation } from "../redux/location"
+import { setCurrentLocation } from "../services/movementService"
 
 /**
  * 사용자가 움직이는 것을 계속 감지하기 위해 watchPosition 설정하는 Custom Hooks
@@ -25,7 +26,11 @@ export const useGeoLocation = (options) => {
     // watchPosition() 성공시 전역 상태 업데이트
     const handleSuccess = (pos) => {
       const { latitude, longitude } = pos.coords
-      dispatch(setLocation({ latitude, longitude }))
+      const location = { latitude, longitude }
+      // 리덕스 초기 위경도 객체 업데이트
+      dispatch(setLocation(location))
+      // 초기 위경도 객체 업데이트
+      setCurrentLocation(location)
     }
 
     // watchPosition() 에러 처리

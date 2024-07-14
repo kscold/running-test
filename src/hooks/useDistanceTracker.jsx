@@ -7,6 +7,7 @@ import haversineDistance from "../utils/haversineDistance"
  * 위경도의 위치를 갱신하고 거리와 걸음을 계산하는 Custom Hooks
  * @method updateDistance 위경도의 위치를 업데이트하는 메서드
  * @method refreshDistance 위경도의 위치를 새로고침하는 메서드
+ * 현재는 movementServices.js를 사용함
  */
 export const useDistanceTracker = () => {
   const dispatch = useDispatch()
