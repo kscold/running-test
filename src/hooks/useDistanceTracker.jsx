@@ -22,7 +22,7 @@ export const useDistanceTracker = () => {
         const dist = haversineDistance(currentLocationRef.current, newLocation)
         const averageStepLength = 0.8
 
-        if (dist >= 5 && dist < 20) {
+        if (0 <= dist && dist <= 20) {
           dispatch(
             updateDistanceAndSteps({
               distance: dist,
