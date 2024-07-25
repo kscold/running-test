@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+@import "./setting/common";
+@import "./setting/reset";
+
+@import "./mixins/flexbox";
+@import "./mixins/font";
+
+@import "./layouts/layout";
+@import "./layouts/footer";
+
+// @import "./modules/progessbar";
+@import "./modules/registermodal";
+@import "./modules/walkstartloading";
+
+@import "./page/intro";
+@import "./page/auth/auth";
+@import "./page/auth/info";
+@import "./page/record";
+@import "./page/walk";
