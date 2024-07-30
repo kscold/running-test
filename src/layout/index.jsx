@@ -18,11 +18,17 @@ const Layout = () => {
     "/auth/login",
     "/auth/register",
     "/auth/register/info",
+    "/routine/ongoing",
+    "/routine/ongoing:id",
   ]
 
   // showFooter true이고 noFooterPaths에 정의되지 않았을 때, footer가 표시
   const footerVisible =
     showFooter && !noFooterPaths.some((path) => location.pathname === path)
+
+  // const useNofooterRoutineLayout = "/routine/".some((path) =>
+  //   path.include(location.pathname)
+  // )
 
   // nofooter-content-container로 표시되어야 하는 경로 정의
   const footerPathsWithNoFooterLayout = [

@@ -1,7 +1,18 @@
-import React from "react"
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
-const Coummunity = () => {
-  return <div>Coummunity</div>
-}
+import Main from "./components/Main";
+import Dum from "./components/Dum";
 
-export default Coummunity
+const Community = () => {
+  const location = useLocation();
+  const isCommunityPath = location.pathname === "/community";
+  return (
+    <>
+      {isCommunityPath && <Main />}
+      <Outlet />
+    </>
+  );
+};
+
+export default Community;

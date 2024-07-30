@@ -9,7 +9,6 @@
 @import "./layouts/layout";
 @import "./layouts/footer";
 
-// @import "./modules/progessbar";
 @import "./modules/registermodal";
 @import "./modules/walkstartloading";
 
@@ -17,4 +16,13 @@
 @import "./page/auth/auth";
 @import "./page/auth/info";
 @import "./page/record";
-@import "./page/walk";
+@import "./page/walk/walk";
+@import "./page/walk/result";
+@import "./page/walk/kcal";
+@import "./page/chatbot";
+@import "./page/community";
+
+@import "./page/routine";
+@import "./page/routine_set";
+@import "./page/routine_detail";
+@import "./page/routine_calendar";
