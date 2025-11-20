@@ -27,8 +27,10 @@ const CitationToggle = ({ citations }: { citations: Citation[] }) => {
                 <span className="citation-id">ID: {citation.documentId}</span>
               </div>
 
-              {/* 스니펫 (발췌문) */}
-              {citation.snippet && (
+              {/* 스니펫 (발췌문) - 유효한 내용이 있을 때만 표시 */}
+              {citation.snippet &&
+               citation.snippet !== '스니펫 없음' &&
+               citation.snippet !== '(발췌문 정보 없음)' && (
                 <div className="citation-snippet">
                   <div className="snippet-label">📄 발췌문:</div>
                   <p>{citation.snippet}</p>
@@ -36,7 +38,9 @@ const CitationToggle = ({ citations }: { citations: Citation[] }) => {
               )}
 
               {/* 전체 내용 보기 (있는 경우) */}
-              {citation.fullContent && (
+              {citation.fullContent &&
+               citation.fullContent !== '스니펫 없음' &&
+               citation.fullContent !== '(발췌문 정보 없음)' && (
                 <div className="citation-full-content">
                   <button
                     className="full-content-toggle"
@@ -49,6 +53,16 @@ const CitationToggle = ({ citations }: { citations: Citation[] }) => {
                       {citation.fullContent}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* 스니펫이 없는 경우 안내 메시지 */}
+              {(!citation.snippet ||
+                citation.snippet === '스니펫 없음' ||
+                citation.snippet === '(발췌문 정보 없음)') && (
+                <div className="citation-no-snippet">
+                  <span className="no-snippet-icon">⚠️</span>
+                  <span className="no-snippet-text">이 출처는 발췌문 정보가 제공되지 않았습니다.</span>
                 </div>
               )}
 
@@ -230,6 +244,11 @@ export const Chatbot = () => {
 
   return (
     <div className="chatbot-container">
+      {/* 모바일 오버레이 (사이드바 열렸을 때) */}
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* 사이드바 */}
       <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
