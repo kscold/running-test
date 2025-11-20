@@ -1,70 +1,128 @@
-# Getting Started with Create React App
+# 푼타 챗봇 UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+푼타 백오피스 챗봇 API를 연동한 React 기반 챗봇 인터페이스입니다.
 
-## Available Scripts
+## 기술 스택
 
-In the project directory, you can run:
+- React 19.2.0
+- TypeScript 5.9.3
+- Vite 7.2.2
+- 푼타 챗봇 RAG API (File Search RAG / MongoDB RAG)
 
-### `npm start`
+## 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 실시간 챗봇 대화
+- RAG 방식 선택 (File Search RAG / MongoDB RAG)
+- Citations 출처 표시
+- 대화 세션 관리
+- 푼타 브랜드 디자인
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 설치 및 실행
 
-### `npm test`
+### 1. 의존성 설치
+```bash
+yarn install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. 환경 변수 설정
+`.env` 파일에서 API URL 확인:
+```bash
+# 로컬 개발 (백엔드 8081 포트)
+VITE_API_BASE_URL=http://localhost:8081
 
-### `npm run build`
+# 배포 환경
+# VITE_API_BASE_URL=https://api.admin.eatbuy.co.kr
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 3. 개발 서버 실행
+```bash
+yarn dev
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+브라우저에서 http://localhost:3000 접속
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 4. 프로덕션 빌드
+```bash
+yarn build
+yarn preview
+```
 
-### `npm run eject`
+## 프로젝트 구조
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+running-test/
+├── src/
+│   ├── components/
+│   │   ├── Chatbot.tsx       # 챗봇 메인 컴포넌트
+│   │   └── Chatbot.css        # 챗봇 스타일
+│   ├── services/
+│   │   └── chatbotApi.ts      # 챗봇 API 서비스
+│   ├── types/
+│   │   └── chatbot.ts         # TypeScript 타입 정의
+│   ├── App.tsx                # 앱 컴포넌트
+│   ├── App.css                # 글로벌 스타일
+│   └── main.tsx               # 앱 진입점
+├── index.html                 # HTML 템플릿
+├── vite.config.ts             # Vite 설정
+├── tsconfig.json              # TypeScript 설정
+└── package.json               # 패키지 정보
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## API 연동
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 엔드포인트
+- **POST** `/api/chatbot/chat`
 
-## Learn More
+### Request
+```typescript
+{
+  message: string;
+  ragType?: 'file-search-rag' | 'mongodb-rag';
+  sessionId?: string;
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Response
+```typescript
+{
+  success: boolean;
+  message: string;
+  citations?: Citation[];
+  sessionId?: string;
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 사용 방법
 
-### Code Splitting
+1. **챗봇 대화**: 하단 입력창에 질문 입력 후 전송
+2. **RAG 방식 선택**: 상단 드롭다운에서 File Search RAG 또는 MongoDB RAG 선택
+3. **대화 초기화**: 상단 "대화 초기화" 버튼 클릭
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 개발 가이드
 
-### Analyzing the Bundle Size
+### 컴포넌트 구조
+- `Chatbot.tsx`: 메인 챗봇 UI 및 로직
+- `chatbotApi.ts`: API 통신 담당
+- `chatbot.ts`: TypeScript 타입 정의
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 스타일링
+- 푼타 브랜드 컬러: `#ff6b6b` ~ `#ff8787` (그라디언트)
+- 반응형 디자인 적용
+- 부드러운 애니메이션 효과
 
-### Making a Progressive Web App
+### API 백엔드 실행
+푼타 백오피스 백엔드가 8081 포트에서 실행 중이어야 합니다:
+```bash
+cd /Users/kscold/Desktop/punta-backoffice-BE
+yarn start:dev
+# 또는
+npm run start:dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**백엔드 포트**: 8081 (로컬)
+**API 엔드포인트**: http://localhost:8081/api/chatbot/chat
 
-### Advanced Configuration
+## 문의
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+프로젝트 관련 문의는 개발팀으로 연락주세요.
